@@ -119,7 +119,7 @@ def add_task():
 
 
 @app.route("/edit_task/<task_id>", methods=["GET", "POST"])
-def edit_task(task_id):    
+def edit_task(task_id):
     if request.method == "POST":
         is_urgent = "on" if request.form.get("is_urgent") else "off"
         submit = {
@@ -136,6 +136,14 @@ def edit_task(task_id):
     task = mongo.db.tasks.find_one({"_id":  ObjectId(task_id)})
     categories = mongo.db.categories.find().sort("category_name", 1)
     return render_template("edit_task.html", task=task, categories=categories)
+    
+
+
+@app.route("/delete_task/<task_id>")
+def delete_task(task_id):
+    mongo.db.tasks.remove({"_id":  ObjectId(task_id)})
+    flash("Task succesfully deleted")
+    return redirect(url_for("get_tasks"))
 
 
 if __name__ == "__main__":
